@@ -107,10 +107,9 @@ func (cron *Cron) Add(job QorJobInterface) (err error) {
 			scheduleTime := scheduler.GetScheduleTime().In(time.Local)
 			job.SetStatus(JobStatusScheduled)
 
-			currentPath, _ := os.Getwd()
 			jobs = append(jobs, &cronJob{
 				JobID:   job.GetJobID(),
-				Command: fmt.Sprintf("%d %d %d %d * cd %v; %v --qor-job %v\n", scheduleTime.Minute(), scheduleTime.Hour(), scheduleTime.Day(), scheduleTime.Month(), currentPath, binaryFile, job.GetJobID()),
+				Command: fmt.Sprintf("%d %d %d %d * %v --qor-job %v\n", scheduleTime.Minute(), scheduleTime.Hour(), scheduleTime.Day(), scheduleTime.Month(), binaryFile, job.GetJobID()),
 			})
 		} else {
 			cmd := exec.Command(binaryFile, "--qor-job", job.GetJobID())
